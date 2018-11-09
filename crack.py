@@ -5,13 +5,16 @@ from PIL import Image
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import ActionChains
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from os import listdir
 
-USERNAME = '15874295385'
-PASSWORD = 'fpdpvx119'
+# USERNAME = '15874295385'
+# PASSWORD = 'fpdpvx119'
+USERNAME = '17023536436'
+PASSWORD = 'ik076435'
 
 TEMPLATES_FOLDER = 'templates/'
 
@@ -19,7 +22,10 @@ TEMPLATES_FOLDER = 'templates/'
 class CrackWeiboSlide():
     def __init__(self):
         self.url = 'https://passport.weibo.cn/signin/login?entry=mweibo&r=https://m.weibo.cn/'
+        options = Options()
+        # options.add_argument('--headless')
         self.browser = webdriver.Chrome()
+        self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 20)
         self.username = USERNAME
         self.password = PASSWORD
@@ -105,7 +111,7 @@ class CrackWeiboSlide():
         :return:
         """
         # 相似度阈值
-        threshold = 0.99
+        threshold = 0.989
         count = 0
         for x in range(image.width):
             for y in range(image.height):
@@ -113,6 +119,7 @@ class CrackWeiboSlide():
                 if self.is_pixel_equal(image, template, x, y):
                     count += 1
         result = float(count) / (image.width * image.height)
+        print(result)
         if result > threshold:
             print('成功匹配')
             return True
@@ -142,6 +149,7 @@ class CrackWeiboSlide():
         # 获得四个按点
         circles = self.browser.find_elements_by_css_selector('.patt-wrap .patt-circ')
         dx = dy = 0
+        print(numbers)
         for index in range(4):
             circle = circles[numbers[index] - 1]
             # 如果是第一次循环
@@ -152,7 +160,7 @@ class CrackWeiboSlide():
                     .click_and_hold().perform()
             else:
                 # 小幅移动次数
-                times = 30
+                times = 8
                 # 拖动
                 for i in range(times):
                     ActionChains(self.browser).move_by_offset(dx / times, dy / times).perform()
@@ -176,7 +184,7 @@ class CrackWeiboSlide():
         image = self.get_image('captcha.png')
         numbers = self.detect_image(image)
         self.move(numbers)
-        time.sleep(10)
+        time.sleep(20)
         print('识别结束')
 
 
